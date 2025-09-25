@@ -1,0 +1,54 @@
+---
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+
+ci:
+  autoupdate_commit_msg: 'pre-commit: autoupdate'
+  # Disabled until ruff versions are synced between deps and pre-commit
+  autoupdate_schedule: false
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.13.0
+    hooks:
+      - id: ruff
+        #--fix-only,只维修，不汇报违规
+        args: [--fix ]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-mypy ##Python类型检查工具
+    rev: v0.930
+    hooks:
+      - id: mypy
+        args: [--ignore-missing-imports, --follow-imports=silent, --show-error-codes] ## 忽略缺失导入，静默导入，显示错误代码
+
+  # - repo: https://github.com/PyCQA/flake8 ##Python语法检查工具
+  #   rev: 7.3.0
+  #   hooks:
+  #     - id: flake8
+  #       additional_dependencies:
+  #         - flake8-docstrings==1.7.0
+  #         - pydocstyle==5.1.1
+  #       files: ^(python/raspberrypi)/.+\.py$
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks ##代码质量检查工具
+    rev: v5.0.0
+    hooks:
+        # args:
+      - id: end-of-file-fixer ## 末尾空白字符检查
+      - id: trailing-whitespace ## 末尾空白字符检查
+      - id: mixed-line-ending ## 行尾换行符检查
+
+  - repo: https://github.com/adrienverge/yamllint.git ##YAML语法检查工具
+    rev: v1.37.1
+    hooks:
+      - id: yamllint
+        exclude: ^(\.clang-format|\.clang-tidy)$ ## 排除不需要格式化的目录或文件
+
+  - repo: https://github.com/pre-commit/mirrors-clang-format ##C++代码格式化工具
+    rev: v13.0.1
+    hooks:
+      - id: clang-format
+        # args: [-dry-run, werror,--style=file] ## 使用项目根目录的 .clang-format 文件
+        args: ["--style=file"]
+        types_or: [c, c++]

@@ -1,0 +1,20 @@
+---
+# 缩进规则
+indentation: 2
+
+# 行末空格检查
+trailing-spaces: enable
+
+# 文档开头空行
+document-start: enable
+
+# 文本行长度
+line-length:
+  max: 1000
+  level: warning
+
+# 空行检查
+empty-lines: disable
+
+# key 风格检查
+key-duplicates: enable

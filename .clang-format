@@ -26,43 +26,43 @@ MaxEmptyLinesToKeep: 1
 # ==========================
 BreakBeforeBraces: Attach    # 代码块前换行
 BraceWrapping:
-  AfterClass:      false
+  AfterClass:      true  # 类定义后换行
   AfterControlStatement: false
-  AfterEnum:       false
-  AfterFunction:   false
-  AfterNamespace:  false
-  AfterObjCDeclaration: false
-  AfterStruct:     false
-  AfterUnion:      false
-  AfterExternBlock: false
+  AfterEnum:       true
+  AfterFunction:   true  # 函数定义后换行
+  AfterNamespace:  true
+  AfterObjCDeclaration: true
+  AfterStruct:     true
+  AfterUnion:      true
+  AfterExternBlock: true
   BeforeCatch:     false
   BeforeElse:      false
   IndentBraces:    false
-  SplitEmptyFunction: true
+  SplitEmptyFunction: false
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
 
-AllowShortBlocksOnASingleLine: true
+AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: All
-AllowShortIfStatementsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 KeepEmptyLinesAtTheStartOfBlocks: true
 
 # ==========================
-# 操作符与换行惩罚
+# 操作符与换行
 # ==========================
 AlignOperands: true
 AlignTrailingComments: true
 BreakBeforeBinaryOperators: None
-BreakBeforeTernaryOperators: true
+BreakBeforeTernaryOperators: false
 PenaltyBreakAssignment: 100
 PenaltyBreakBeforeFirstCallParameter: 5
 PenaltyBreakComment: 400
 PenaltyBreakFirstLessLess: 5
 PenaltyBreakString: 400
 PenaltyBreakTemplateDeclaration: 10
-PenaltyExcessCharacter: 1000000
+PenaltyExcessCharacter: 400
 PenaltyReturnTypeOnItsOwnLine: 2000
 
 # ==========================
@@ -145,7 +145,7 @@ AllowAllParametersOfDeclarationOnNextLine: true
 # 其他
 # ==========================
 AlignConsecutiveAssignments: false
-AlignConsecutiveDeclarations: false
+AlignConsecutiveDeclarations: true
 AlignEscapedNewlines: DontAlign
 AlwaysBreakAfterReturnType: None
 BreakBeforeInheritanceComma: false
@@ -153,9 +153,8 @@ BreakInheritanceList: BeforeColon
 BreakConstructorInitializersBeforeComma: false
 BreakConstructorInitializers: BeforeColon
 BreakAfterJavaFieldAnnotations: false
-ColumnLimit: 1000
+ColumnLimit: 200
 DerivePointerAlignment: false
 DisableFormat: false
-ExperimentalAutoDetectBinPacking: false
+ExperimentalAutoDetectBinPacking: true
 ForEachMacros: [foreach, Q_FOREACH, BOOST_FOREACH]
-IncludeIsMainRegex: '([-_](test|unittest))?$'
