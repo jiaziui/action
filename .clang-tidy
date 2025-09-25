@@ -1,0 +1,42 @@
+Checks: >
+  bugprone-*,                       # 常见 bug 检查
+  readability-*,                    # 可读性检查
+  performance-*,                    # 性能相关检查
+  modernize-*,                      # 现代 C++ 用法（nullptr, override 等）
+  cppcoreguidelines-*,              # C++ 核心指南
+  clang-analyzer-*,                 # 静态分析
+  misc-non-private-member-variables-in-classes, # 警告非私有成员变量
+  readability-identifier-naming     # 命名规则
+
+
+CheckOptions:
+  - { key: readability-identifier-naming.ClassCase,    value: CamelCase  } ## 类名使用驼峰命名法
+  - { key: readability-identifier-naming.ClassPrefix,  value: 'DFRobot_' } ## 类名前缀为 DFRobot_
+  - { key: readability-identifier-naming.PrivateMemberPrefix, value: '_' } ## 私有成员变量以下划线开头
+  - { key: readability-identifier-naming.ProtectedMemberPrefix, value: '_' } ## 保护成员变量以下划线开头
+
+  - { key: readability-identifier-naming.VariableCase, value: camelBack  } ## 变量名使用驼峰命名法
+  - { key: readability-identifier-naming.PointerVariablePrefix, value: 'p' } ## 指针变量名前缀为 p
+
+  - { key: readability-identifier-naming.FunctionCase, value: camelBack }  # 普通函数、小驼峰
+  - { key: readability-identifier-naming.MethodCase, value: camelBack }    # 类成员方法
+
+  - { key: readability-identifier-naming.MacroDefinitionCase, value: UPPER_CASE }  # 宏定义全部大写
+
+  # 结构体命名规则
+  - { key: readability-identifier-naming.StructCase, value: CamelCase }
+  - { key: readability-identifier-naming.StructPrefix, value: 's' }
+  - { key: readability-identifier-naming.StructSuffix, value: '_t' }
+
+  # union 命名规则
+  - { key: readability-identifier-naming.UnionCase, value: CamelCase }
+  - { key: readability-identifier-naming.UnionPrefix, value: 'u' }
+  - { key: readability-identifier-naming.UnionSuffix, value: '_t' }
+
+  # enum 命名规则
+  - { key: readability-identifier-naming.EnumCase, value: CamelCase }
+  - { key: readability-identifier-naming.EnumPrefix, value: 'e' }
+  - { key: readability-identifier-naming.EnumSuffix, value: '_t' }
+
+  # 全局变量命名规则
+  - { key: readability-identifier-naming.GlobalVariableCase, value: camelBack }

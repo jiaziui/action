@@ -1,0 +1,155 @@
+---
+name: Arduino Library CI
+
+on: [pull_request, push, repository_dispatch]
+
+permissions:
+  contents: read
+
+env: ## 定义一些环境变量
+  PYTHON_3: "3.11"
+  PYUPGRADE_TARGET: "--py311-plus" ## pyupgrade 目标版本
+
+jobs:
+  common:                                       ## 这个job必须放在最前面，因为它会设置一些环境变量供后续job使用
+    name: Create common environment
+    runs-on: ubuntu-24.04
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.key }} ## 输出缓存 key，供后续 job 使用
+    steps:
+      - name: Check out code from GitHub        ## 拉取代码到虚拟机
+        uses: actions/checkout@v5.0.0
+
+      - name: Generate cache-key                ## 根据依赖文件生成缓存 key
+        id: cache-key
+        run: |
+          echo key="${{ hashFiles('requirements.txt', '.pre-commit-config.yaml') }}" >> $GITHUB_OUTPUT
+
+      - name: set up Python ${{ env.PYTHON_3 }} ## 设置 Python 3 环境
+        id: python3
+        uses: actions/setup-python@v6.0.0
+        with:
+          python-version: ${{ env.PYTHON_3 }}
+
+      - name: Cache venv                        ## 缓存虚拟环境
+        id: cache-venv
+        uses: actions/cache@v4.2.4
+        with:
+          path: venv                            ## 缓存路径
+          key: ${{ runner.os }}-${{ env.PYTHON_3 }}-venv-${{ steps.cache-key.outputs.key }}
+      - name: Create Python virtual environment ## 创建 Python 虚拟环境
+        run: |
+          python -m venv venv
+          . venv/bin/activate
+          python  --version
+          pip install -r requirements.txt pre-commit
+      - name: Save venv to cache
+        if: steps.cache-venv.outputs.cache-hit != 'true'
+        uses: actions/cache@v4.2.4
+        with:
+          path: venv
+          key: ${{ runner.os }}-${{ env.PYTHON_3 }}-venv-${{ steps.cache-key.outputs.key }}
+
+      - name: Show Python packages              ## 显示已安装的 Python 包
+        run: |
+          . venv/bin/activate
+          pip list
+
+  pylint:                                       ## 自动化检查 Python 代码规范和潜在问题，并在 CI 中给出修改建议。
+    name: check pylint
+    runs-on: ubuntu-24.04
+    continue-on-error: true   ## pylint 出错不会让 workflow fail
+    needs:
+      - common                      ## 依赖 common job，确保环境变量已设置
+    steps:
+      - name: Check out code from GitHub
+        uses: actions/checkout@v5.0.0           ##检查代码
+
+      - name: Restore Python 3                ## 还原 Python 3 环境
+        uses: ./.github/actions/restore-python
+        with:
+          python-version: ${{ env.PYTHON_3 }}
+          cache-key: ${{ needs.common.outputs.cache-key }}
+
+      - name: Run pylint
+        run: |
+          . venv/bin/activate
+          ## pylint --exit-zero -f parseable --persistent=n python/raspberrypi    ##运行 pylint 检查代码规范
+          pylint  -f parseable --persistent=n python/raspberrypi    ##运行 pylint 检查代码规范
+        if: always()
+      - name: Suggested changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes suggested by pylint."
+          else
+            echo "Changes suggested by pylint:"
+            git --no-pager diff
+            exit 1
+          fi
+        if: always()
+
+  clang-tidy:
+    name: check clang-tidy and build
+    runs-on: ubuntu-24.04
+    needs:
+      - common                      ## 依赖 common job，确保环境变量已设置
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5.0.0
+
+      - name: Restore Python 3                ## 还原 Python 3 环境
+        uses: ./.github/actions/restore-python
+        with:
+          python-version: ${{ env.PYTHON_3 }}
+          cache-key: ${{ needs.common.outputs.cache-key }}
+
+      - name: Install PlatformIO
+        run: pip install platformio
+
+      - name: Generate compile_commands.json
+        run: pio run -t compiledb
+
+      - name: Run clang-tidy
+        run: |
+          FILES=$(find src examples -type f \( -name '*.cpp' -o -name '*.h' -o -name '*.ino' \))  # 查找 src 和 examples 中所有源文件
+          echo "Running clang-tidy on $FILES"
+          if [ -z "$FILES" ]; then             # 检查是否有文件
+              echo "No source files found."
+              exit 0
+          fi
+          clang-tidy $FILES -p . -header-filter="$filter"
+        if: always()
+
+
+  pre-commit:
+    name: check pre-commit
+    runs-on: ubuntu-24.04
+    continue-on-error: true   ## pylint 出错不会让 workflow fail
+    needs:
+      - common                      ## 依赖 common job，确保环境变量已设置
+    steps:
+      - name: Check out code from GitHub
+        uses: actions/checkout@v5.0.0
+      - name: Restore Python 3
+        uses: ./.github/actions/restore-python
+        with:
+          python-version: ${{ env.PYTHON_3 }}
+          cache-key: ${{ needs.common.outputs.cache-key }}
+
+      - uses: pre-commit/action@v3.0.1 ## 使用 pre-commit action 来运行 pre-commit 检查
+        env:
+          SKIP: pylint
+      - uses: pre-commit-ci/lite-action@v1.1.0
+        if: always()
+
+
+  ci-status: ## 检查 CI 状态
+    runs-on: ubuntu-24.04
+    needs:
+      - common
+      - pylint
+      - clang-tidy
+      - pre-commit
+    if: always()
+    steps:
+      - run: echo "Running ci-status job"
