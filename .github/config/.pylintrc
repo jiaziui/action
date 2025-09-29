@@ -1,0 +1,62 @@
+[MASTER] ## 主配置
+
+init-hook='import sys; sys.path.append(".")'
+module-rgx=([a-z][a-z0-9_]+$)|(DFRobot[a-zA-Z0-9_]*$) ## 匹配模块名，DFRobot开头的模块名或全部小写字母开头的模块名
+
+[MESSAGES CONTROL] ## 消息控制
+# 禁用一些不太常用的检查
+disable=missing-docstring,              ## 缺少文档注释，这个开启，要求所有函数和类都必须有文档注释
+        too-many-lines,                 ## 文件过长
+        too-few-public-methods,         ## 公共方法过少
+        no-else-return,                 ## 没有必要的 else return
+        wildcard-import,                ## 通配符导入
+        unnecessary-pass,               ## 不必要的 pass 语句
+        superfluous-parens,             ## 多余的括号
+        import-error,                   ## 忽略导入错误，适用于动态导入的模块
+        useless-object-inheritance,     ## 没有必要的继承
+        no-member,                      ## 忽略没有成员的错误，适用于动态属性
+        bare-except,                    ## 忽略不必要的异常处理
+        super-with-arguments,           ## 忽略 super() 需要参数的错误
+        R,                              ## 忽略所有以 R 开头的错误,忽略建议
+        unused-wildcard-import,         ## 忽略未使用的通配符导入
+        wrong-import-position,          ## 禁用不正确的导入位置
+        W0246,                          ## 忽略没有 __init__ 方法的错误,python兼容相关问题
+        C0411,                          ## 忽略导入未使用的模块，库的导入顺序问题（标准要求第三方库的导入，在标准库之后）
+        W0105,                          ## 忽略没有必要的 lambda 表达式
+
+[REPORTS]
+# 输出报告的格式
+output-format=parseable
+
+[FORMAT]
+# 使用 2 个空格缩进
+indent-string='    '
+
+max-line-length=200
+
+[LOGGING]
+# 启用 logging
+logging-modules=logging
+
+[VARIABLES]
+# 避免过长的变量名称
+# 设置变量名为小写，使用下划线
+good-names=i,j,k,ex,Run,_  # 默认的一些短变量名称
+
+[TYPECHECK]
+# 添加类型检查器
+ignored-classes=optparse.Values
+
+[BASIC]
+# 类名必须是 PascalCase 或 DFRobot 开头
+class-rgx=(DFRobot[a-zA-Z0-9_]*$) #[A-Z][a-zA-Z0-9]+$)|
+
+# 变量名规则：允许公有、受保护和私有变量名
+variable-rgx=(_[a-z_][a-z0-9_]{2,30}$|__[a-z_][a-z0-9_]{2,30}$|[a-z_][a-z0-9_]{2,30}$)
+
+# 函数名依旧严格 snake_case
+function-rgx=(_[a-z_][a-z0-9_]{2,30}$|__[a-z_][a-z0-9_]{2,30}$|[a-z_][a-z0-9_]{2,30}$)
+
+; [TYPECHECK]
+; # 在模块中使用类型检查
+; ignore-mixin-members=yes

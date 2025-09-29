@@ -11,44 +11,36 @@ repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.13.0
     hooks:
-      - id: ruff
+      # - id: ruff # 静态代码检查
         #--fix-only,只维修，不汇报违规
-        args: [--fix ]
-      - id: ruff-format
+        # args: [--fix ]
+      - id: ruff-format # 格式化代码
+        # args:
 
-  - repo: https://github.com/pre-commit/mirrors-mypy ##Python类型检查工具
+  - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.930
     hooks:
       - id: mypy
-        args: [--ignore-missing-imports, --follow-imports=silent, --show-error-codes] ## 忽略缺失导入，静默导入，显示错误代码
+        args: [--ignore-missing-imports, --follow-imports=silent, --show-error-codes]
 
-  # - repo: https://github.com/PyCQA/flake8 ##Python语法检查工具
-  #   rev: 7.3.0
-  #   hooks:
-  #     - id: flake8
-  #       additional_dependencies:
-  #         - flake8-docstrings==1.7.0
-  #         - pydocstyle==5.1.1
-  #       files: ^(python/raspberrypi)/.+\.py$
-
-  - repo: https://github.com/pre-commit/pre-commit-hooks ##代码质量检查工具
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
-        # args:
-      - id: end-of-file-fixer ## 末尾空白字符检查
-      - id: trailing-whitespace ## 末尾空白字符检查
-      - id: mixed-line-ending ## 行尾换行符检查
+      - id: check-ast                # 验证Python语法（能编译）
+      - id: end-of-file-fixer        # 修正文件末尾空白字符
+      - id: mixed-line-ending        # 修正混合行尾空白字符
+      - id: trailing-whitespace      # 删除行尾空白字符
 
-  - repo: https://github.com/adrienverge/yamllint.git ##YAML语法检查工具
+  - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.37.1
     hooks:
       - id: yamllint
-        exclude: ^(\.clang-format|\.clang-tidy)$ ## 排除不需要格式化的目录或文件
+        exclude: ^(\.clang-format|\.clang-tidy)$
+        args: [--config-file, ./.github/config/.yamllint]
 
-  - repo: https://github.com/pre-commit/mirrors-clang-format ##C++代码格式化工具
-    rev: v13.0.1
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v21.1.2
     hooks:
       - id: clang-format
-        # args: [-dry-run, werror,--style=file] ## 使用项目根目录的 .clang-format 文件
-        args: ["--style=file"]
+        args: ["--assume-filename=./.github/config/.clang-format"]
         types_or: [c, c++]

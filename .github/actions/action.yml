@@ -1,46 +1,36 @@
 name: Restore Python
-description: Restore Python virtual environment with caching  ## 恢复 Python 虚拟环境并使用缓存（仅限 Linux）
-inputs: ## 输入参数
+description: Restore Python virtual environment with caching
+inputs:
   python-version:
     description: Python version to restore
     required: true
-    type: string ## 输入 Python 版本
+    type: string
   cache-key:
     description: Cache key to use
     required: true
-    type: string ## 输入缓存键
-outputs: ## 输出参数
+    type: string
+outputs:
   python-version:
     description: Python version restored
     value: ${{ inputs.python-version }}
-    ## 输出 Python 版本，供后续步骤使用
 runs:
   using: "composite"
   steps:
-    # 1. 设置 Python
     - name: Set up Python ${{ inputs.python-version }}
       id: setup-python
       uses: actions/setup-python@v6.0.0
       with:
         python-version: ${{ inputs.python-version }}
 
-    # 2. 尝试恢复虚拟环境缓存
     - name: Restore Python3 virtual environment
       id: cache-venv
       uses: actions/cache/restore@v4.2.4
       with:
         path: venv
         key: ${{ runner.os }}-${{ inputs.python-version }}-venv-${{ inputs.cache-key }}
-        #  调试：打印实际生成的 cache key
-    # - name: Debug cache key
-    #   shell: bash
-    #   run: |
-    #     echo "Cache key used: ${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-venv-${{ inputs.cache-key }}"
-    #     echo "Cache hit: ${{ steps.cache-venv.outputs.cache-hit }}"
 
-    # 3. 缓存未命中，创建虚拟环境并安装依赖
     - name: Create Python virtual environment
-      if: steps.cache-venv.outputs.cache-hit != 'true'
+      if: steps.cache-venv.outputs.cache-hit != 'true' # Cache miss
       shell: bash
       run: |
         echo "Cache miss: creating virtual environment and installing dependencies..."
@@ -48,14 +38,9 @@ runs:
         source venv/bin/activate
         python --version
         pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r ./.github/config/requirements.txt
 
-        # 如果是 Python 包项目，安装 editable 模式
-        if [ -f setup.py ] || [ -f pyproject.toml ]; then
-          pip install -e .
-        fi
-
-    # 4. 缓存命中，直接激活虚拟环境
+    # Cache hit , directly activate the virtual environment
     - name: Activate cached virtual environment
       if: steps.cache-venv.outputs.cache-hit == 'true'
       shell: bash
