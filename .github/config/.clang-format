@@ -8,153 +8,103 @@ Standard:        Auto
 # ==========================
 # 缩进与空格
 # ==========================
-IndentWidth:     2           # 基本缩进 2 空格
-TabWidth:        2
+IndentWidth:     '2'           # 基本缩进 2 空格
+TabWidth:        '2'
 UseTab:          Never       # 禁止使用 Tab，全部用空格
-ContinuationIndentWidth: 4   # 换行续行缩进
-ConstructorInitializerIndentWidth: 4
-AccessModifierOffset: -2     # 类成员访问修饰符偏移
-IndentCaseLabels: true
+ContinuationIndentWidth: '4'   # 换行续行缩进
+ConstructorInitializerIndentWidth: '4'
+AccessModifierOffset: '-2'     # 类成员访问修饰符偏移
+IndentCaseLabels: 'true'
 IndentPPDirectives: None
-IndentWrappedFunctionNames: false
+IndentWrappedFunctionNames: 'false'
 NamespaceIndentation: None
-KeepEmptyLinesAtTheStartOfBlocks: true
-MaxEmptyLinesToKeep: 1
+KeepEmptyLinesAtTheStartOfBlocks: 'true'
+MaxEmptyLinesToKeep: '1'
 
 # ==========================
 # 括号与代码块
 # ==========================
-BreakBeforeBraces: Attach    # 代码块前换行
-BraceWrapping:
-  AfterClass:      true  # 类定义后换行
-  AfterControlStatement: false
-  AfterEnum:       true
-  AfterFunction:   true  # 函数定义后换行
-  AfterNamespace:  true
-  AfterObjCDeclaration: true
-  AfterStruct:     true
-  AfterUnion:      true
-  AfterExternBlock: true
-  BeforeCatch:     false
-  BeforeElse:      false
-  IndentBraces:    false
-  SplitEmptyFunction: false
-  SplitEmptyRecord: true
-  SplitEmptyNamespace: true
+BreakBeforeBraces: Stroustrup    # 代码块前换行
 
-AllowShortBlocksOnASingleLine: false
-AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: None
-AllowShortIfStatementsOnASingleLine: false
-AllowShortLoopsOnASingleLine: false
-KeepEmptyLinesAtTheStartOfBlocks: true
+AllowShortBlocksOnASingleLine: 'false'
+AllowShortCaseLabelsOnASingleLine: 'false'
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: 'false' ## if 后不换行
+AllowShortLoopsOnASingleLine: 'false' # for 后不换行
 
 # ==========================
 # 操作符与换行
 # ==========================
-AlignOperands: true
-AlignTrailingComments: true
-BreakBeforeBinaryOperators: None
-BreakBeforeTernaryOperators: false
-PenaltyBreakAssignment: 100
-PenaltyBreakBeforeFirstCallParameter: 5
-PenaltyBreakComment: 400
-PenaltyBreakFirstLessLess: 5
-PenaltyBreakString: 400
-PenaltyBreakTemplateDeclaration: 10
-PenaltyExcessCharacter: 400
-PenaltyReturnTypeOnItsOwnLine: 2000
+AlignOperands: 'true' # 多元运算符对齐
+AlignTrailingComments: 'true' # 尾随注释对齐
+BreakBeforeBinaryOperators: None # 二元运算符换行
+BreakBeforeTernaryOperators: 'false' # 三元运算符换行
+PenaltyBreakAssignment: '100' # 赋值运算符换行
+PenaltyBreakBeforeFirstCallParameter: '200' # 函数调用参数换行
+PenaltyBreakComment: '1000'  # 注释换行
+PenaltyBreakString: '1000' # 字符串换行
+PenaltyExcessCharacter: '1000' # 字符过多换行
+PenaltyReturnTypeOnItsOwnLine: '1000' # 函数返回类型换行
 
 # ==========================
 # 指针、引用与类型
 # ==========================
 PointerAlignment: Right
-SpaceAfterCStyleCast: false
-SpaceAfterTemplateKeyword: false
-SpaceBeforeAssignmentOperators: true
-SpaceBeforeCpp11BracedList: false
-SpaceBeforeCtorInitializerColon: true
-SpaceBeforeInheritanceColon: true
+SpaceAfterCStyleCast: 'false'
+SpaceAfterTemplateKeyword: 'false'
+SpaceBeforeAssignmentOperators: 'true'
+SpaceBeforeCpp11BracedList: 'false'
+SpaceBeforeCtorInitializerColon: 'true'
+SpaceBeforeInheritanceColon: 'true'
 SpaceBeforeParens: Never
-SpaceBeforeRangeBasedForLoopColon: true
-SpacesInParentheses: false
-SpacesInSquareBrackets: false
-SpacesInAngles: false
-SpacesInContainerLiterals: false
-SpacesBeforeTrailingComments: 2
+SpaceBeforeRangeBasedForLoopColon: 'true'
+SpacesInParentheses: 'false'
+SpacesInSquareBrackets: 'false'
+SpacesInAngles: 'false'
+SpacesInContainerLiterals: 'false'
+SpacesBeforeTrailingComments: '4'
 
 # ==========================
 # 字符串与注释
 # ==========================
-AlwaysBreakBeforeMultilineStrings: false
-BreakStringLiterals: true
-CommentPragmas: '^ IWYU pragma:'
-ReflowComments: false
-FixNamespaceComments: true
-
-RawStringFormats:
-  - Language: Cpp
-    Delimiters: [cc, CC, cpp, Cpp, CPP, 'c++', 'C++']
-    CanonicalDelimiter: ''
-    BasedOnStyle: google
-  - Language: TextProto
-    Delimiters: [pb, PB, proto, PROTO]
-    EnclosingFunctions:
-      - EqualsProto
-      - EquivToProto
-      - PARSE_PARTIAL_TEXT_PROTO
-      - PARSE_TEST_PROTO
-      - ParseTextOrDie
-      - ParseTextProtoOrDie
-    CanonicalDelimiter: ''
-    BasedOnStyle: google
-
-# ==========================
-# Include 文件管理
-# ==========================
-IncludeBlocks: Preserve
-IncludeCategories:
-  - Regex: '^<ext/.*\.h>'
-    Priority: 2
-  - Regex: '^<.*\.h>'
-    Priority: 1
-  - Regex: '^<.*'
-    Priority: 2
-  - Regex: '.*'
-    Priority: 3
-IncludeIsMainRegex: '([-_](test|unittest))?$'
-SortIncludes: false
-SortUsingDeclarations: false
+AlwaysBreakBeforeMultilineStrings: 'false'
+BreakStringLiterals: 'true'
+ReflowComments: 'false'
+FixNamespaceComments: 'true'
 
 # ==========================
 # C++ 特性与标准
 # ==========================
-Cpp11BracedListStyle: true
-DerivePointerAlignment: false
-DisableFormat: false
-ExperimentalAutoDetectBinPacking: false
-BinPackArguments: true
-BinPackParameters: true
+Cpp11BracedListStyle: 'false'
+DerivePointerAlignment: 'true'
+DisableFormat: 'false'
+ExperimentalAutoDetectBinPacking: 'true'
+BinPackArguments: 'true'
+BinPackParameters: 'true'
 
 # ==========================
 # 控制函数与宏
 # ==========================
-AllowAllParametersOfDeclarationOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: 'true'
 
 # ==========================
 # 其他
 # ==========================
-AlignConsecutiveAssignments: false
-AlignConsecutiveDeclarations: true
+AlignConsecutiveAssignments: 'false'
+AlignConsecutiveDeclarations: 'true'
 AlignEscapedNewlines: DontAlign
 AlwaysBreakAfterReturnType: None
-BreakBeforeInheritanceComma: false
+BreakBeforeInheritanceComma: 'false'
 BreakInheritanceList: BeforeColon
-BreakConstructorInitializersBeforeComma: false
+BreakConstructorInitializersBeforeComma: 'false'
 BreakConstructorInitializers: BeforeColon
-BreakAfterJavaFieldAnnotations: false
-ColumnLimit: 200
-DerivePointerAlignment: false
-DisableFormat: false
-ExperimentalAutoDetectBinPacking: true
-ForEachMacros: [foreach, Q_FOREACH, BOOST_FOREACH]
+BreakAfterJavaFieldAnnotations: 'false'
+
+AllowAllArgumentsOnNextLine: 'false'
+AlignConsecutiveMacros: 'true'
+AllowAllConstructorInitializersOnNextLine: 'false'
+AlwaysBreakAfterDefinitionReturnType: None
+ColumnLimit: '200'
+CommentPragmas: '@'
+SpaceInEmptyParentheses: 'false'
+SpacesInCStyleCastParentheses: 'false'

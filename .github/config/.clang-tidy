@@ -20,8 +20,8 @@ CheckOptions:
   readability-identifier-naming.MethodCase: 'camelBack'
 
   # 宏命名
-  # readability-identifier-naming.MacroDefinitionCase: 'UPPER_CASE' # 宏定义全部大写
-  readability-identifier-naming.MacroCase: 'UPPER_CASE' # 宏调用全部大写
+  # readability-identifier-naming.MacroDefinitionCase: 'UPPER_CASE'
+  readability-identifier-naming.MacroCase: 'UPPER_CASE'
   readability-identifier-naming.MacroPrefix: '__'
 
   # 结构体命名
