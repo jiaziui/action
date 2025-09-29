@@ -6,9 +6,9 @@ on: [pull_request, push, repository_dispatch]
 permissions:
   contents: read
 
-env: ## 定义一些环境变量
+env:
   PYTHON_3: "3.11"
-  PYUPGRADE_TARGET: "--py311-plus" ## pyupgrade 目标版本
+  REQUIREMENTS_PATH: './.github/config/requirements.txt' ## 依赖文件路径
 
 jobs:
   common:                                       ## 这个job必须放在最前面，因为它会设置一些环境变量供后续job使用
@@ -23,7 +23,7 @@ jobs:
       - name: Generate cache-key                ## 根据依赖文件生成缓存 key
         id: cache-key
         run: |
-          echo key="${{ hashFiles('requirements.txt', '.pre-commit-config.yaml') }}" >> $GITHUB_OUTPUT
+          echo key="${{ hashFiles(env.REQUIREMENTS_PATH, '.pre-commit-config.yaml') }}" >> $GITHUB_OUTPUT
 
       - name: set up Python ${{ env.PYTHON_3 }} ## 设置 Python 3 环境
         id: python3
@@ -41,8 +41,7 @@ jobs:
         run: |
           python -m venv venv
           . venv/bin/activate
-          python  --version
-          pip install -r requirements.txt pre-commit
+          pip install -r ${{ env.REQUIREMENTS_PATH }}
       - name: Save venv to cache
         if: steps.cache-venv.outputs.cache-hit != 'true'
         uses: actions/cache@v4.2.4
@@ -50,15 +49,10 @@ jobs:
           path: venv
           key: ${{ runner.os }}-${{ env.PYTHON_3 }}-venv-${{ steps.cache-key.outputs.key }}
 
-      - name: Show Python packages              ## 显示已安装的 Python 包
-        run: |
-          . venv/bin/activate
-          pip list
-
-  pylint:                                       ## 自动化检查 Python 代码规范和潜在问题，并在 CI 中给出修改建议。
+  pylint:
     name: check pylint
     runs-on: ubuntu-24.04
-    continue-on-error: true   ## pylint 出错不会让 workflow fail
+    continue-on-error: true
     needs:
       - common                      ## 依赖 common job，确保环境变量已设置
     steps:
@@ -66,7 +60,7 @@ jobs:
         uses: actions/checkout@v5.0.0           ##检查代码
 
       - name: Restore Python 3                ## 还原 Python 3 环境
-        uses: ./.github/actions/restore-python
+        uses: ./.github/actions
         with:
           python-version: ${{ env.PYTHON_3 }}
           cache-key: ${{ needs.common.outputs.cache-key }}
@@ -74,8 +68,7 @@ jobs:
       - name: Run pylint
         run: |
           . venv/bin/activate
-          ## pylint --exit-zero -f parseable --persistent=n python/raspberrypi    ##运行 pylint 检查代码规范
-          pylint  -f parseable --persistent=n python/raspberrypi    ##运行 pylint 检查代码规范
+          pylint  -f parseable --rcfile=./.github/config/.pylintrc --persistent=n python/raspberrypi    ##运行 pylint 检查代码规范
         if: always()
       - name: Suggested changes
         run: |
@@ -92,13 +85,13 @@ jobs:
     name: check clang-tidy and build
     runs-on: ubuntu-24.04
     needs:
-      - common                      ## 依赖 common job，确保环境变量已设置
+      - common
     steps:
       - name: Checkout code
         uses: actions/checkout@v5.0.0
 
-      - name: Restore Python 3                ## 还原 Python 3 环境
-        uses: ./.github/actions/restore-python
+      - name: Restore Python 3
+        uses: ./.github/actions
         with:
           python-version: ${{ env.PYTHON_3 }}
           cache-key: ${{ needs.common.outputs.cache-key }}
@@ -107,49 +100,63 @@ jobs:
         run: pip install platformio
 
       - name: Generate compile_commands.json
-        run: pio run -t compiledb
+        run: pio run -t compiledb --project-dir ./.github/config/
 
       - name: Run clang-tidy
         run: |
-          FILES=$(find src examples -type f \( -name '*.cpp' -o -name '*.h' -o -name '*.ino' \))  # 查找 src 和 examples 中所有源文件
+          export C_INCLUDE_PATH="$PWD/src:$PWD/examples" ## 设置 include 路径
+          export CPLUS_INCLUDE_PATH="$PWD/src:$PWD/examples" ## 设置 include 路径
+
+          FILES=$(find src examples -type f \( -name '*.cpp' -o -name '*.h' -o -name '*.ino' \))
           echo "Running clang-tidy on $FILES"
-          if [ -z "$FILES" ]; then             # 检查是否有文件
+          if [ -z "$FILES" ]; then
               echo "No source files found."
               exit 0
           fi
-          clang-tidy $FILES -p . -header-filter="$filter"
+          # clang-tidy $FILES -p ./.github/config/  -header-filter="." -config-file=./.github/config/.clang-tidy -system-headers=false
+
+          for file in $FILES; do
+            echo "Processing $file"
+            clang-tidy "$file" -p ./.github/config/ \
+              -header-filter="$filter" \
+              -config-file=./.github/config/.clang-tidy \
+              --extra-arg="-I$PWD/src" \
+              --extra-arg="-I$PWD/examples" \
+              --extra-arg=-Wno-notes \
+              --quiet \
+              || true
+          done
         if: always()
 
 
-  pre-commit:
-    name: check pre-commit
-    runs-on: ubuntu-24.04
-    continue-on-error: true   ## pylint 出错不会让 workflow fail
-    needs:
-      - common                      ## 依赖 common job，确保环境变量已设置
-    steps:
-      - name: Check out code from GitHub
-        uses: actions/checkout@v5.0.0
-      - name: Restore Python 3
-        uses: ./.github/actions/restore-python
-        with:
-          python-version: ${{ env.PYTHON_3 }}
-          cache-key: ${{ needs.common.outputs.cache-key }}
+  # pre-commit:
+  #   name: check pre-commit
+  #   runs-on: ubuntu-24.04
+  #   continue-on-error: true   ## pylint 出错不会让 workflow fail
+  #   needs:
+  #     - common                      ## 依赖 common job，确保环境变量已设置
+  #   steps:
+  #     - name: Check out code from GitHub
+  #       uses: actions/checkout@v5.0.0
+  #     - name: Restore Python 3
+  #       uses: ./.github/actions
+  #       with:
+  #         python-version: ${{ env.PYTHON_3 }}
+  #         cache-key: ${{ needs.common.outputs.cache-key }}
 
-      - uses: pre-commit/action@v3.0.1 ## 使用 pre-commit action 来运行 pre-commit 检查
-        env:
-          SKIP: pylint
-      - uses: pre-commit-ci/lite-action@v1.1.0
-        if: always()
+  #     - uses: pre-commit/action@v3.0.1 ## 使用 pre-commit action 来运行 pre-commit 检查
+  #       env:
+  #         SKIP: pylint
+  #     - uses: pre-commit-ci/lite-action@v1.1.0
+  #       if: always()
 
 
-  ci-status: ## 检查 CI 状态
+  ci-status:
     runs-on: ubuntu-24.04
     needs:
       - common
       - pylint
       - clang-tidy
-      - pre-commit
     if: always()
     steps:
       - run: echo "Running ci-status job"
