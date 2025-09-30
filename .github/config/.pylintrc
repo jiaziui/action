@@ -30,7 +30,7 @@ output-format=parseable
 
 [FORMAT]
 # 使用 2 个空格缩进
-indent-string='    '
+indent-string='  '
 
 max-line-length=200
 

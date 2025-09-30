@@ -100,7 +100,8 @@ jobs:
         run: pip install platformio
 
       - name: Generate compile_commands.json
-        run: pio run -t compiledb --project-dir ./.github/config/
+        run: |
+          pio run -t compiledb --project-dir ./.github/config/
 
       - name: Run clang-tidy
         run: |
@@ -117,7 +118,7 @@ jobs:
 
           for file in $FILES; do
             echo "Processing $file"
-            clang-tidy "$file" -p ./.github/config/ \
+            clang-tidy "$file" -p .github/config/ \
               -header-filter="$filter" \
               -config-file=./.github/config/.clang-tidy \
               --extra-arg="-I$PWD/src" \
