@@ -15,7 +15,7 @@ repos:
         #--fix-only,只维修，不汇报违规
         # args: [--fix ]
       - id: ruff-format # 格式化代码
-        args: [--no-cache]
+        args: [--no-cache,--config=./.github/config/.ruff.toml]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.930
