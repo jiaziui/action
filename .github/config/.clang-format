@@ -4,6 +4,7 @@
 
 Language:        Cpp
 Standard:        Auto
+BasedOnStyle:    Google
 
 # ==========================
 # 缩进与空格
@@ -30,7 +31,7 @@ AllowShortBlocksOnASingleLine: 'false'
 AllowShortCaseLabelsOnASingleLine: 'false'
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: 'false' ## if 后不换行
-AllowShortLoopsOnASingleLine: 'false' # for 后不换行
+AllowShortLoopsOnASingleLine: 'true'        # 循环语句短句后不换行
 
 # ==========================
 # 操作符与换行
@@ -105,6 +106,8 @@ AlignConsecutiveMacros: 'true'
 AllowAllConstructorInitializersOnNextLine: 'false'
 AlwaysBreakAfterDefinitionReturnType: None
 ColumnLimit: '200'
-CommentPragmas: '@'
+#CommentPragmas: '@'
 SpaceInEmptyParentheses: 'false'
 SpacesInCStyleCastParentheses: 'false'
+
+AllowShortEnumsOnASingleLine: 'false'

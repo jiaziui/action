@@ -36,6 +36,10 @@ indent-string='  '
 
 max-line-length=200
 
+class-rgx=DFRobot_[A-Z][a-zA-Z0-9_]+$
+function-rgx=[a-z_][a-z0-9_]{2,30}$
+variable-rgx=[a-z_][a-z0-9_]{2,30}$
+
 [LOGGING]
 # 启用 logging
 logging-modules=logging
@@ -51,13 +55,13 @@ ignored-classes=optparse.Values
 
 [BASIC]
 # 类名必须是 PascalCase 或 DFRobot 开头
-class-rgx=(DFRobot[a-zA-Z0-9_]*$) #[A-Z][a-zA-Z0-9]+$)|
+#class-rgx=(DFRobot[a-zA-Z0-9_]*$) #[A-Z][a-zA-Z0-9]+$)|
 
 # 变量名规则：允许公有、受保护和私有变量名
-variable-rgx=(_[a-z_][a-z0-9_]{2,30}$|__[a-z_][a-z0-9_]{2,30}$|[a-z_][a-z0-9_]{2,30}$)
+#variable-rgx=(_[a-z_][a-z0-9_]{2,30}$|__[a-z_][a-z0-9_]{2,30}$|[a-z_][a-z0-9_]{2,30}$)
 
 # 函数名依旧严格 snake_case
-function-rgx=(_[a-z_][a-z0-9_]{2,30}$|__[a-z_][a-z0-9_]{2,30}$|[a-z_][a-z0-9_]{2,30}$)
+#function-rgx=(_[a-z_][a-z0-9_]{2,30}$|__[a-z_][a-z0-9_]{2,30}$|[a-z_][a-z0-9_]{2,30}$)
 
 ; [TYPECHECK]
 ; # 在模块中使用类型检查
