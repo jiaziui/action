@@ -1,4 +1,5 @@
 ---
+# 相关资料
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 
@@ -9,12 +10,9 @@ ci:
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.13.0
+    rev: v0.14.0
     hooks:
-      # - id: ruff # 静态代码检查
-        #--fix-only,只维修，不汇报违规
-        # args: [--fix ]
-      - id: ruff-format # 格式化代码
+      - id: ruff-format
         args: [--no-cache,--config=./.github/config/.ruff.toml]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
@@ -24,6 +22,13 @@ repos:
         args:
           - --config-file
           - ./.github/config/.mypy.ini
+
+  # - repo: https://github.com/psf/black
+  #   rev: 25.9.0
+  #   hooks:
+  #     - id: black
+  #       args:
+  #         - --config=.github/config/pyproject.toml
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0

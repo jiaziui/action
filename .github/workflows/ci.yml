@@ -108,7 +108,7 @@ jobs:
           export C_INCLUDE_PATH="$PWD/src:$PWD/examples" ## 设置 include 路径
           export CPLUS_INCLUDE_PATH="$PWD/src:$PWD/examples" ## 设置 include 路径
 
-          FILES=$(find src examples -type f \( -name '*.cpp' -o -name '*.h' -o -name '*.ino' \))
+          FILES=$(find . -type f \( -name '*.cpp' -o -name '*.h' -o -name '*.ino' \))
           echo "Running clang-tidy on $FILES"
           if [ -z "$FILES" ]; then
               echo "No source files found."

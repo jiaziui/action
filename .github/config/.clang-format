@@ -1,3 +1,7 @@
+# 配置先关资料：
+# 在线配置工具：https://zed0.co.uk/clang-format-configurator/
+#
+
 # ==========================
 # C++ 代码风格配置
 # ==========================
@@ -70,7 +74,7 @@ SpacesBeforeTrailingComments: '4'
 # ==========================
 AlwaysBreakBeforeMultilineStrings: 'false'
 BreakStringLiterals: 'true'
-ReflowComments: 'false'
+ReflowComments: 'true'
 FixNamespaceComments: 'true'
 
 # ==========================
@@ -106,7 +110,7 @@ AlignConsecutiveMacros: 'true'
 AllowAllConstructorInitializersOnNextLine: 'false'
 AlwaysBreakAfterDefinitionReturnType: None
 ColumnLimit: '200'
-#CommentPragmas: '@'
+CommentPragmas: '*'
 SpaceInEmptyParentheses: 'false'
 SpacesInCStyleCastParentheses: 'false'
 

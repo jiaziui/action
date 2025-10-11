@@ -1,0 +1,19 @@
+
+indent_width = 2
+[tool.black]
+line-length = 200
+skip-string-normalization = true   # 保持原字符串引号
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''

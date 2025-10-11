@@ -1,3 +1,5 @@
+# 相关资料
+# https://yamllint.readthedocs.io/en/stable/configuration.html
 ---
 # 缩进规则
 indentation: 2

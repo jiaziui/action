@@ -1,3 +1,5 @@
+# 相关资料
+# https://pylint.pycqa.org/en/latest/user_guide/usage/run.html#command-line-options
 [MASTER] ## 主配置
 
 init-hook='import sys; sys.path.append(".")'
@@ -52,17 +54,3 @@ good-names=i,j,k,ex,Run,_  # 默认的一些短变量名称
 [TYPECHECK]
 # 添加类型检查器
 ignored-classes=optparse.Values
-
-[BASIC]
-# 类名必须是 PascalCase 或 DFRobot 开头
-#class-rgx=(DFRobot[a-zA-Z0-9_]*$) #[A-Z][a-zA-Z0-9]+$)|
-
-# 变量名规则：允许公有、受保护和私有变量名
-#variable-rgx=(_[a-z_][a-z0-9_]{2,30}$|__[a-z_][a-z0-9_]{2,30}$|[a-z_][a-z0-9_]{2,30}$)
-
-# 函数名依旧严格 snake_case
-#function-rgx=(_[a-z_][a-z0-9_]{2,30}$|__[a-z_][a-z0-9_]{2,30}$|[a-z_][a-z0-9_]{2,30}$)
-
-; [TYPECHECK]
-; # 在模块中使用类型检查
-; ignore-mixin-members=yes

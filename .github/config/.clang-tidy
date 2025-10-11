@@ -1,3 +1,5 @@
+# 官方资料
+# https://clang.llvm.org/extra/clang-tidy/?utm_source=chatgpt.com
 Checks: >
   readability-identifier-naming
 
