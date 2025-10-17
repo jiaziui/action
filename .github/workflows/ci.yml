@@ -8,36 +8,36 @@ permissions:
 
 env:
   PYTHON_3: "3.11"
-  REQUIREMENTS_PATH: './.github/config/requirements.txt'
+  REQUIREMENTS_PATH: './.github/config/requirements.txt' ## 依赖文件路径
 
 jobs:
-  common:
+  common:                                       ## 这个job必须放在最前面，因为它会设置一些环境变量供后续job使用
     name: Create common environment
     runs-on: ubuntu-24.04
     outputs:
-      cache-key: ${{ steps.cache-key.outputs.key }}
+      cache-key: ${{ steps.cache-key.outputs.key }} ## 输出缓存 key，供后续 job 使用
     steps:
-      - name: Check out code from GitHub
+      - name: Check out code from GitHub        ## 拉取代码到虚拟机
         uses: actions/checkout@v5.0.0
 
-      - name: Generate cache-key
+      - name: Generate cache-key                ## 根据依赖文件生成缓存 key
         id: cache-key
         run: |
           echo key="${{ hashFiles(env.REQUIREMENTS_PATH, '.pre-commit-config.yaml') }}" >> $GITHUB_OUTPUT
 
-      - name: set up Python ${{ env.PYTHON_3 }}
+      - name: set up Python ${{ env.PYTHON_3 }} ## 设置 Python 3 环境
         id: python3
         uses: actions/setup-python@v6.0.0
         with:
           python-version: ${{ env.PYTHON_3 }}
 
-      - name: Cache venv
+      - name: Cache venv                        ## 缓存虚拟环境
         id: cache-venv
         uses: actions/cache@v4.2.4
         with:
-          path: venv
+          path: venv                            ## 缓存路径
           key: ${{ runner.os }}-${{ env.PYTHON_3 }}-venv-${{ steps.cache-key.outputs.key }}
-      - name: Create Python virtual environment
+      - name: Create Python virtual environment ## 创建 Python 虚拟环境
         run: |
           python -m venv venv
           . venv/bin/activate
@@ -54,12 +54,12 @@ jobs:
     runs-on: ubuntu-24.04
     continue-on-error: true
     needs:
-      - common
+      - common                      ## 依赖 common job，确保环境变量已设置
     steps:
       - name: Check out code from GitHub
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v5.0.0           ##检查代码
 
-      - name: Restore Python 3
+      - name: Restore Python 3                ## 还原 Python 3 环境
         uses: ./.github/actions
         with:
           python-version: ${{ env.PYTHON_3 }}
@@ -71,12 +71,13 @@ jobs:
 
           FILES=$(find . -type f -name "*.py" -not -path "*/.venv/*" -not -path "*/venv/*" -not -path "*/.git/*")
 
+          # 如果为空则跳过
           if [ -z "$FILES" ]; then
             echo "No Python files found. Skipping pylint."
             exit 0
           fi
 
-          pylint  -f parseable --rcfile=./.github/config/.pylintrc --persistent=n $FILES || true
+          pylint  -f parseable --rcfile=./.github/config/.pylintrc --persistent=n $FILES || true  ##运行 pylint 检查代码规范
         if: always()
       - name: Suggested changes
         run: |
@@ -121,7 +122,7 @@ jobs:
           -type f \( -name '*.cpp' -o -name '*.h' -o -name '*.ino' \) -print)
           
           echo "Running clang-tidy on $FILES"
-          if [ -z "$FILES" ]; then
+          if [ -z "$FILES" ]; then             # 检查是否有文件
               echo "No source files found."
               exit 0
           fi
@@ -169,3 +170,4 @@ jobs:
           echo "pylint:     ${{ needs.pylint.result }}"
           echo "clang-tidy: ${{ needs['clang-tidy'].result }}"
           echo "===================="
+
