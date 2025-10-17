@@ -6,7 +6,8 @@ on:
     branches:
       - "**"       # 普通分支推送时运行代码检查
     tags:
-      - "v*.*.*"   # 打 tag 时运行发布检查
+      - "v*.*.*"   # 小写 v 触发
+      - "V*.*.*"   # 大写 V 触发
   pull_request:
   repository_dispatch:
 
@@ -14,7 +15,7 @@ permissions:
   contents: read
 
 env:
-  PYTHON_3: "3.11"
+  PYTHON_3: "3.11.13"
   REQUIREMENTS_PATH: './.github/config/requirements.txt' ## 依赖文件路径
 
 jobs:
@@ -44,7 +45,7 @@ jobs:
         with:
           path: venv                            ## 缓存路径
           key: ${{ runner.os }}-${{ env.PYTHON_3 }}-venv-${{ steps.cache-key.outputs.key }}
-          
+
       - name: Create Python virtual environment ## 创建 Python 虚拟环境
         run: |
           python -m venv venv
@@ -153,11 +154,14 @@ jobs:
 
   release:
       name: Check tag version
-      if: startsWith(github.ref, 'refs/tags/v')
+      if: startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/tags/V')
       runs-on: ubuntu-24.04
       permissions:
         contents: write
       needs: common
+      concurrency:
+        group: release-${{ github.ref }}
+        cancel-in-progress: true
       steps:
         - name: Checkout code
           uses: actions/checkout@v5.0.0
@@ -167,9 +171,16 @@ jobs:
         - name: Verify library.properties version
           id: verify
           run: |
-            TAG_VERSION="${GITHUB_REF#refs/tags/v}"
-            FILE_VERSION=$(grep '^version=' library.properties | cut -d'=' -f2)
+            RAW_TAG="${GITHUB_REF#refs/tags/}"      # 例如 v1.0.1 或 V1.0.1
+            TAG_VERSION="${RAW_TAG#[vV]}"           # 去掉前导 v 或 V -> 1.0.1
 
+            # 读取并清理文件里的 version= 值
+            if [ ! -f library.properties ]; then
+              echo "❌ library.properties not found"
+              exit 1
+            fi
+            FILE_VERSION="$(awk -F= '/^[[:space:]]*version[[:space:]]*=/ {print $2; exit}' library.properties \
+              | tr -d '\r' | xargs)"
             echo "📦 Tag version: $TAG_VERSION"
             echo "🧾 File version: $FILE_VERSION"
 
@@ -182,31 +193,31 @@ jobs:
             echo "✅ Version match confirmed: $TAG_VERSION"
             echo "tag_version=$TAG_VERSION" >> $GITHUB_OUTPUT
 
-        - name: Create release zip
-          id: zip
-          run: |
-            ZIP_NAME="${{ github.event.repository.name }}_${{ steps.verify.outputs.tag_version }}.zip"
-            echo "Creating $ZIP_NAME"
-            zip -r "$ZIP_NAME" . \
-              -x '*.git*' '.github/*' '__pycache__/*' # 排除不必要的文件 .github  、.git  、__pycache__
-            echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
+        # - name: Create release zip
+        #   id: zip
+        #   run: |
+        #     ZIP_NAME="${{ github.event.repository.name }}_${{ steps.verify.outputs.tag_version }}.zip"
+        #     echo "Creating $ZIP_NAME"
+        #     zip -r "$ZIP_NAME" . \
+        #       -x '*.git*' '.github/*' '__pycache__/*' # 排除不必要的文件 .github  、.git  、__pycache__
+        #     echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
 
-        - name: Upload GitHub Release
-          uses: softprops/action-gh-release@v2
-          with:
-            files: ${{ steps.zip.outputs.zip_name }}
-            generate_release_notes: true
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # - name: Upload GitHub Release
+        #   uses: softprops/action-gh-release@v2
+        #   with:
+        #     files: ${{ steps.zip.outputs.zip_name }}
+        #     generate_release_notes: true
+        #   env:
+        #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   ci-status:
     runs-on: ubuntu-24.04
-    if: ${{ always() }}
     needs:
       - common
       - pylint
       - clang-tidy
       - release
+    if: always()
     steps:
       - name: Print job results
         run: |
