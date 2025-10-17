@@ -44,11 +44,13 @@ jobs:
         with:
           path: venv                            ## 缓存路径
           key: ${{ runner.os }}-${{ env.PYTHON_3 }}-venv-${{ steps.cache-key.outputs.key }}
+          
       - name: Create Python virtual environment ## 创建 Python 虚拟环境
         run: |
           python -m venv venv
           . venv/bin/activate
           pip install -r ${{ env.REQUIREMENTS_PATH }}
+
       - name: Save venv to cache
         if: steps.cache-venv.outputs.cache-hit != 'true'
         uses: actions/cache@v4.2.4
