@@ -1,7 +1,14 @@
 ---
 name: Arduino Library CI
 
-on: [pull_request, push, repository_dispatch]
+on: 
+  push:
+    branches:
+      - "**"       # 普通分支推送时运行代码检查
+    tags:
+      - "v*.*.*"   # 打 tag 时运行发布检查
+  pull_request:
+  repository_dispatch:
 
 permissions:
   contents: read
@@ -50,7 +57,9 @@ jobs:
           key: ${{ runner.os }}-${{ env.PYTHON_3 }}-venv-${{ steps.cache-key.outputs.key }}
 
   pylint:
-    name: check pylint
+    if: (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')) \
+      || github.event_name == 'pull_request' \
+      || github.event_name == 'repository_dispatch'
     runs-on: ubuntu-24.04
     continue-on-error: true
     needs:
@@ -91,6 +100,9 @@ jobs:
         if: always()
 
   clang-tidy:
+    if: (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')) \
+      || github.event_name == 'pull_request' \
+      || github.event_name == 'repository_dispatch'
     name: check clang-tidy and build
     runs-on: ubuntu-24.04
     needs:
@@ -133,27 +145,53 @@ jobs:
         if: always()
 
 
-  # pre-commit:
-  #   name: check pre-commit
-  #   runs-on: ubuntu-24.04
-  #   continue-on-error: true   ## pylint 出错不会让 workflow fail
-  #   needs:
-  #     - common                      ## 依赖 common job，确保环境变量已设置
-  #   steps:
-  #     - name: Check out code from GitHub
-  #       uses: actions/checkout@v5.0.0
-  #     - name: Restore Python 3
-  #       uses: ./.github/actions
-  #       with:
-  #         python-version: ${{ env.PYTHON_3 }}
-  #         cache-key: ${{ needs.common.outputs.cache-key }}
+  release:
+      name: Check tag version
+      if: startsWith(github.ref, 'refs/tags/v')
+      runs-on: ubuntu-24.04
+      permissions:
+        contents: write
+      needs: common
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v5.0.0
+          with:
+            fetch-depth: 0
 
-  #     - uses: pre-commit/action@v3.0.1 ## 使用 pre-commit action 来运行 pre-commit 检查
-  #       env:
-  #         SKIP: pylint
-  #     - uses: pre-commit-ci/lite-action@v1.1.0
-  #       if: always()
+        - name: Verify library.properties version
+          id: verify
+          run: |
+            TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+            FILE_VERSION=$(grep '^version=' library.properties | cut -d'=' -f2)
 
+            echo "📦 Tag version: $TAG_VERSION"
+            echo "🧾 File version: $FILE_VERSION"
+
+            if [ "$TAG_VERSION" != "$FILE_VERSION" ]; then
+              echo "❌ Version mismatch!"
+              echo "library.properties version ($FILE_VERSION) does not match tag ($TAG_VERSION)"
+              exit 1
+            fi
+
+            echo "✅ Version match confirmed: $TAG_VERSION"
+            echo "tag_version=$TAG_VERSION" >> $GITHUB_OUTPUT
+
+        - name: Create release zip
+          id: zip
+          run: |
+            ZIP_NAME="${{ github.event.repository.name }}_${{ steps.verify.outputs.tag_version }}.zip"
+            echo "Creating $ZIP_NAME"
+            zip -r "$ZIP_NAME" . \
+              -x '*.git*' '.github/*' '__pycache__/*' # 排除不必要的文件 .github  、.git  、__pycache__
+            echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
+
+        - name: Upload GitHub Release
+          uses: softprops/action-gh-release@v2
+          with:
+            files: ${{ steps.zip.outputs.zip_name }}
+            generate_release_notes: true
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   ci-status:
     runs-on: ubuntu-24.04
@@ -162,6 +200,7 @@ jobs:
       - common
       - pylint
       - clang-tidy
+      - release
     steps:
       - name: Print job results
         run: |
@@ -169,5 +208,6 @@ jobs:
           echo "common:     ${{ needs.common.result }}"
           echo "pylint:     ${{ needs.pylint.result }}"
           echo "clang-tidy: ${{ needs['clang-tidy'].result }}"
+          echo "release:    ${{ needs.release.result }}"
           echo "===================="
 
