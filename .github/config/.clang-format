@@ -1,0 +1,127 @@
+# 配置先关资料：
+# 在线配置工具：https://zed0.co.uk/clang-format-configurator/
+
+# ==========================
+# C++ 代码风格配置
+# ==========================
+
+Language:        Cpp
+Standard:        Auto
+BasedOnStyle:    Google
+
+# ==========================
+# 缩进与空格
+# ==========================
+IndentWidth:     '2'           # 基本缩进 2 空格
+TabWidth:        '2'
+UseTab:          Never       # 禁止使用 Tab，全部用空格
+ContinuationIndentWidth: '4'   # 换行续行缩进
+ConstructorInitializerIndentWidth: '4'
+AccessModifierOffset: '-2'     # 类成员访问修饰符偏移
+IndentCaseLabels: 'true'
+IndentPPDirectives: None
+IndentWrappedFunctionNames: 'false'
+NamespaceIndentation: None
+KeepEmptyLinesAtTheStartOfBlocks: 'true'
+MaxEmptyLinesToKeep: '1'
+
+# ==========================
+# 括号与代码块
+# ==========================
+BreakBeforeBraces: Custom # Custom    # 代码块前换行
+BraceWrapping:
+  AfterFunction: true           # 函数定义后 { 换行
+  BeforeElse: false             # else { 保持同行
+  SplitEmptyFunction: true     # 空函数 {} 不拆行
+  AfterCaseLabel : false
+  AfterClass : false
+  AfterControlStatement : false # if/for/while/switch 后不换行
+  AfterEnum : false
+  AfterStruct : false
+  AfterUnion : false
+  BeforeCatch : true
+  IndentBraces: false ## 大括号缩进
+
+AllowShortBlocksOnASingleLine: 'false'
+AllowShortCaseLabelsOnASingleLine: 'false'
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: 'false' ## if 后不换行
+AllowShortLoopsOnASingleLine: 'true'        # 循环语句短句后不换行
+
+# ==========================
+# 操作符与换行
+# ==========================
+AlignOperands: 'true' # 多元运算符对齐
+AlignTrailingComments: 'true' # 尾随注释对齐
+BreakBeforeBinaryOperators: None # 二元运算符换行
+BreakBeforeTernaryOperators: 'false' # 三元运算符换行
+PenaltyBreakAssignment: '100' # 赋值运算符换行
+PenaltyBreakBeforeFirstCallParameter: '150' # 函数调用参数换行
+PenaltyBreakComment: '1000'  # 注释换行
+PenaltyBreakString: '1000' # 字符串换行
+PenaltyExcessCharacter: '1000' # 字符过多换行
+PenaltyReturnTypeOnItsOwnLine: '1000' # 函数返回类型换行
+
+# ==========================
+# 指针、引用与类型
+# ==========================
+PointerAlignment: Right
+SpaceAfterCStyleCast: 'false'
+SpaceAfterTemplateKeyword: 'false'
+SpaceBeforeAssignmentOperators: 'true'
+SpaceBeforeCpp11BracedList: 'false'
+SpaceBeforeCtorInitializerColon: 'true'
+SpaceBeforeInheritanceColon: 'true'
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: 'true'
+SpacesInParentheses: 'false'
+SpacesInSquareBrackets: 'false'
+SpacesInAngles: 'false'
+SpacesInContainerLiterals: 'false'
+SpacesBeforeTrailingComments: '4'
+
+# ==========================
+# 字符串与注释
+# ==========================
+AlwaysBreakBeforeMultilineStrings: 'false'
+BreakStringLiterals: 'false'  ## 字符串过长换行
+ReflowComments: 'true' ## 注释自动合并
+FixNamespaceComments: 'true'
+
+# ==========================
+# C++ 特性与标准
+# ==========================
+Cpp11BracedListStyle: 'false'
+DerivePointerAlignment: 'true'
+DisableFormat: 'false'
+ExperimentalAutoDetectBinPacking: 'true'
+BinPackArguments: 'true'
+BinPackParameters: 'true'
+
+# ==========================
+# 控制函数与宏
+# ==========================
+AllowAllParametersOfDeclarationOnNextLine: 'true'
+
+# ==========================
+# 其他
+# ==========================
+AlignConsecutiveAssignments: 'true'  ## 连续赋值对齐
+AlignConsecutiveDeclarations: 'true'  ## 连续声明对齐
+AlignEscapedNewlines: DontAlign
+AlwaysBreakAfterReturnType: None
+BreakBeforeInheritanceComma: 'false'
+BreakInheritanceList: BeforeColon
+BreakConstructorInitializersBeforeComma: 'false'
+BreakConstructorInitializers: BeforeColon
+BreakAfterJavaFieldAnnotations: 'false'
+
+AllowAllArgumentsOnNextLine: 'false'
+AlignConsecutiveMacros: 'true'
+AllowAllConstructorInitializersOnNextLine: 'false'
+AlwaysBreakAfterDefinitionReturnType: None
+ColumnLimit: '200'
+CommentPragmas: '*'
+SpaceInEmptyParentheses: 'false'
+SpacesInCStyleCastParentheses: 'false' # 强制 C 风格转换后不加空格
+AllowShortEnumsOnASingleLine: 'false'

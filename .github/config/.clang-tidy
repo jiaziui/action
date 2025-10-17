@@ -1,0 +1,45 @@
+# 官方资料
+# https://clang.llvm.org/extra/clang-tidy/?utm_source=chatgpt.com
+Checks: >
+  readability-identifier-naming
+
+
+CheckOptions:
+  # 类命名
+  readability-identifier-naming.ClassCase: 'UPPER_CASE'
+  readability-identifier-naming.ClassPrefix: 'DFRobot_'
+
+  readability-identifier-naming.MemberCase: 'camelBack'
+  readability-identifier-naming.PrivateMemberPrefix: '_'
+  readability-identifier-naming.ProtectedMemberPrefix: '_'
+
+  # 普通变量命名
+  readability-identifier-naming.VariableCase: 'camelBack'
+  readability-identifier-naming.PointerVariableCase: 'camelBack'
+  readability-identifier-naming.PointerVariablePrefix: 'p'
+
+  # 函数命名
+  readability-identifier-naming.FunctionCase: 'camelBack'
+  readability-identifier-naming.MethodCase: 'camelBack'
+
+  # 宏命名
+  # readability-identifier-naming.MacroDefinitionCase: 'UPPER_CASE'
+  readability-identifier-naming.MacroCase: 'UPPER_CASE'
+  readability-identifier-naming.MacroPrefix: '__'
+
+  # 结构体命名
+  readability-identifier-naming.StructCase: 'CamelCase'
+  readability-identifier-naming.StructPrefix: 's'
+  readability-identifier-naming.StructSuffix: '_t'
+
+  # 枚举
+  readability-identifier-naming.EnumCase: 'CamelCase'
+  readability-identifier-naming.EnumSuffix: '_t'
+  readability-identifier-naming.EnumPrefix: 'e'
+  readability-identifier-naming.EnumConstantCase: 'CamelCase'
+  readability-identifier-naming.EnumConstantPrefix: 'e'
+
+  # 全局变量
+  readability-identifier-naming.GlobalVariableCase: 'camelBack'
+
+  readability-identifier-naming.IgnoreFailedSplit: 'true'

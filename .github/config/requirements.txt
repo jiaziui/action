@@ -1,0 +1,4 @@
+# requirements.txt
+pylint>=2.15
+pre-commit
+click==8.1.7

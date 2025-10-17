@@ -1,0 +1,20 @@
+# 相关资料
+# https://yamllint.readthedocs.io/en/stable/configuration.html
+---
+# 缩进规则
+indentation: 2
+
+# 行末空格检查
+trailing-spaces: enable
+
+# 文档开头空行
+document-start: enable
+
+# 文本行长度
+line-length:
+  max: 1000
+  level: warning
+
+empty-lines: disable
+
+key-duplicates: enable

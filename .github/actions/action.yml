@@ -1,0 +1,50 @@
+name: Restore Python
+description: Restore Python virtual environment with caching
+inputs:
+  python-version:
+    description: Python version to restore
+    required: true
+    type: string
+  cache-key:
+    description: Cache key to use
+    required: true
+    type: string
+outputs:
+  python-version:
+    description: Python version restored
+    value: ${{ inputs.python-version }}
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python ${{ inputs.python-version }}
+      id: setup-python
+      uses: actions/setup-python@v6.0.0
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Restore Python3 virtual environment
+      id: cache-venv
+      uses: actions/cache/restore@v4.2.4
+      with:
+        path: venv
+        key: ${{ runner.os }}-${{ inputs.python-version }}-venv-${{ inputs.cache-key }}
+
+    - name: Create Python virtual environment
+      if: steps.cache-venv.outputs.cache-hit != 'true' # Cache miss
+      shell: bash
+      run: |
+        echo "Cache miss: creating virtual environment and installing dependencies..."
+        python -m venv venv
+        source venv/bin/activate
+        python --version
+        pip install --upgrade pip
+        pip install -r ./.github/config/requirements.txt
+
+    # Cache hit , directly activate the virtual environment
+    - name: Activate cached virtual environment
+      if: steps.cache-venv.outputs.cache-hit == 'true'
+      shell: bash
+      run: |
+        echo "Cache hit: activating cached virtual environment..."
+        source venv/bin/activate
+        python --version
