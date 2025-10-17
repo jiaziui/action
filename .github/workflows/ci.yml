@@ -57,9 +57,11 @@ jobs:
           key: ${{ runner.os }}-${{ env.PYTHON_3 }}-venv-${{ steps.cache-key.outputs.key }}
 
   pylint:
-    if: (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')) \
-      || github.event_name == 'pull_request' \
+    if: >
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/'))
+      || github.event_name == 'pull_request'
       || github.event_name == 'repository_dispatch'
+
     runs-on: ubuntu-24.04
     continue-on-error: true
     needs:
@@ -100,9 +102,11 @@ jobs:
         if: always()
 
   clang-tidy:
-    if: (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')) \
-      || github.event_name == 'pull_request' \
+    if: >
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/'))
+      || github.event_name == 'pull_request'
       || github.event_name == 'repository_dispatch'
+
     name: check clang-tidy and build
     runs-on: ubuntu-24.04
     needs:
