@@ -1,8 +1,12 @@
 # 官方资料
 # https://clang.llvm.org/extra/clang-tidy/?utm_source=chatgpt.com
-Checks: >
-  readability-identifier-naming
-
+Checks: >-
+  readability-identifier-naming, # 命名规范相关
+  # clang-analyzer-*                # 静态分析相关
+  bugprone-*,                     # 常见错误相关
+  readability-redundant-*,            # 可读性相关
+  readability-misplaced-array-index, # 数组下标相关
+  readability-misplaced-pointer       # 指针相关
 
 CheckOptions:
   # 类命名

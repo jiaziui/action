@@ -14,6 +14,7 @@
 - 支持本地对YAML文件格式检查
 - 支持云端虚拟机静态编译检查C++代码
 - 支持云端虚拟机静态格式检查python代码
+- 支持云端自动tag版本检查
 
 ### 使用方法
 [下载](https://github.com/jiaziui/action.git)

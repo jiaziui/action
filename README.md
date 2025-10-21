@@ -13,6 +13,7 @@ A framework for managing and maintaining multilingual pre-commit hooks and a wor
 - Support local YAML file format checking
 - Support cloud-based virtual machine static compilation checks for C++ code
 - Support cloud-based virtual machine static format checks for Python code
+- Support automatic tag version checking in the cloud
 
 ### Usage
 [download](https://github.com/jiaziui/action.git)
