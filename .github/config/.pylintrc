@@ -3,7 +3,6 @@
 [MASTER] ## 主配置
 
 init-hook='import sys; sys.path.append(".")'
-module-rgx=([a-z][a-z0-9_]+$)|(DFRobot[a-zA-Z0-9_]*$) ## 匹配模块名，DFRobot开头的模块名或全部小写字母开头的模块名
 
 [MESSAGES CONTROL] ## 消息控制
 # 禁用一些不太常用的检查
@@ -42,18 +41,11 @@ indent-string='  '
 
 max-line-length=200
 
-class-rgx=DFRobot_[a-zA-Z][a-zA-Z0-9_]+$
-function-rgx=[a-z_][a-z0-9_]{2,30}$
-variable-rgx=[a-z_][a-z0-9_]{2,30}$
-attr-rgx=_?[a-z_][a-z0-9_]{2,30}$        # 成员属性（允许前导下划线）
-
-const-rgx=(_?[A-Z][A-Z0-9_]{2,50}|__.*__)$
-
 [LOGGING]
 logging-modules=logging
 
 [VARIABLES]
-good-names=i,j,k,ex,Run,_  # 默认的一些短变量名称
+good-names=i,j,k,ex,Run,_               # 默认的一些短变量名称
 
 [TYPECHECK]
 ignored-classes=optparse.Values

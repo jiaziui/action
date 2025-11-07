@@ -8,7 +8,7 @@ fix = true
 line-length = 200
 indent-width = 2
 target-version = "py39"
-# 可选：强制尊重 exclude，即使被直接点名
+# 可选：强制尊重 exclude
 force-exclude = true
 
 [lint]

@@ -23,19 +23,19 @@ A framework for managing and maintaining multilingual pre-commit hooks and a wor
 - Ensure you have Python and pip installed
 - Environmental preparation
 
--- Install pre-commit:
+ Install pre-commit:
   ```bash
   pip install pre-commit
   ```
--- Check if the installation was successful:
+ Check if the installation was successful:
   ```bash
   pre-commit --version
   ```
--- pre-commit initialization
+ pre-commit initialization
   ```bash
   pre-commit install --config .github/config/.pre-commit-config.yaml
   ```
--- Once you reach this step, you can use all the tool sets normally
+ Once you reach this step, you can use all the tool sets normally
 
 - commit:
   ```bash
@@ -51,7 +51,7 @@ A framework for managing and maintaining multilingual pre-commit hooks and a wor
   ```
 #### uninstall
 - pre-commit uninstall
--- This can block the use of pre-commit, that is, block local formatting and checking
+ This can block the use of pre-commit, that is, block local formatting and checking
   ```bash
   pre-commit uninstall
   ```

@@ -23,19 +23,19 @@
 - 将 '.github' 文件夹复制到项目根目录
 - 确保已安装 Python 和 pip
 - 环境准备
--- 安装 pre-commit:
+ 安装 pre-commit:
   ```bash
   pip install pre-commit
   ```
--- 检查是否安装成功:
+ 检查是否安装成功:
   ```bash
   pre-commit --version
   ```
--- pre-commit 初始化
+- pre-commit 初始化
   ```bash
   pre-commit install --config .github/config/.pre-commit-config.yaml
   ```
--- 完成此步骤后，即可正常使用 pre-commit 进行本地代码格式化、静态检查
+- 完成此步骤后，即可正常使用 pre-commit 进行本地代码格式化、静态检查
 
 - 提交:
   ```bash
@@ -51,7 +51,7 @@
   ```
 #### 卸载
 - pre-commit 卸载
--- 这可以阻止 pre-commit 的使用，也就是说，会屏蔽本地的格式化和检查功能。
+这可以阻止 pre-commit 的使用，也就是说，会屏蔽本地的格式化和检查功能。
   ```bash
   pre-commit uninstall
   ```

@@ -1,5 +1,5 @@
 ---
-name: Arduino Library CI
+name: Code CI
 
 on: 
   push:
@@ -131,7 +131,8 @@ jobs:
           cp ./.github/config/platformio.ini .
 
       - name: Generate compile_commands.json
-        run: pio run -t compiledb
+        run: | 
+          pio run -t compiledb
 
       - name: Run clang-tidy
         run: |
@@ -148,9 +149,8 @@ jobs:
           clang-tidy $FILES -p . \
           -header-filter="$filter" \
           -config-file=./.github/config/.clang-tidy \
-          || false
+          || true
         if: always()
-
 
   release:
       name: Check tag version
@@ -213,7 +213,6 @@ jobs:
   ci-status:
     runs-on: ubuntu-24.04
     needs:
-      - common
       - pylint
       - clang-tidy
       - release

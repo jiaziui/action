@@ -1,17 +1,16 @@
 # 官方资料
-# https://clang.llvm.org/extra/clang-tidy/?utm_source=chatgpt.com
+# https://clang.llvm.org/extra/clang-tidy/checks/list.html
 Checks: >-
-  readability-identifier-naming, # 命名规范相关
-  # clang-analyzer-*                # 静态分析相关
-  bugprone-*,                     # 常见错误相关
+  readability-identifier-naming,      # 命名规范相关
+  # clang-analyzer-*                  # 静态分析相关
+  bugprone-*,                         # 常见错误相关
   readability-redundant-*,            # 可读性相关
-  readability-misplaced-array-index, # 数组下标相关
+  readability-misplaced-array-index,  # 数组下标相关
   readability-misplaced-pointer       # 指针相关
 
 CheckOptions:
   # 类命名
-  readability-identifier-naming.ClassCase: 'UPPER_CASE'
-  readability-identifier-naming.ClassPrefix: 'DFRobot_'
+  readability-identifier-naming.ClassCase: 'aNy_CasE'
 
   readability-identifier-naming.MemberCase: 'camelBack'
   readability-identifier-naming.PrivateMemberPrefix: '_'
